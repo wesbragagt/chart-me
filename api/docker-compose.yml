@@ -1,0 +1,14 @@
+version: '3'
+services: 
+  api:
+    stdin_open: true
+    build:
+      target: development
+    ports:
+      - '3001:3001'
+    volumes:
+      - /usr/app/node_modules
+      - .:/usr/app
+  db:
+    image: mongo
+    restart: always
