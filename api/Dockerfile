@@ -1,19 +1,14 @@
-FROM mhart/alpine-node:14 as base
+FROM mhart/alpine-node:14
 
 WORKDIR /usr/app
 
-EXPOSE 3001
+EXPOSE 8080
 
 COPY package.json ./
 COPY yarn.lock ./
 
-RUN yarn install --frozen-lockfile --quiet
+RUN yarn install --frozen-lockfile -quiet
+
 COPY . ./
 
-FROM base as development
-CMD [ "yarn", "start:dev" ]
-
-FROM base as production
-RUN yarn build
-
-CMD ["node", "dist/main.js"]
+CMD ["node", "index.js"]
