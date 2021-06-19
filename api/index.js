@@ -1,6 +1,8 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
+import cors from 'cors'
+import bodyParser from 'body-parser'
 
 dotenv.config()
 
@@ -20,8 +22,45 @@ db.on('open', ()=>{
 const app = express()
 const port = process.env.PORT || 8080
 
+app.use(cors())
+app.use(bodyParser.json())
+
 app.get('/health', (req,res)=>{
     res.send({health: 'ok'})
+})
+
+const SectionSchema = new mongoose.Schema({
+    value: String,
+    label: String,
+    id: String
+})
+
+const ChartSchema = new mongoose.Schema({
+    userId: String,
+    title: String,
+    key: String,
+    bpm: Number,
+    sections: [SectionSchema]
+})
+
+const Chart = mongoose.model('Chart',ChartSchema)
+app.get('/charts', async (req,res)=>{
+  try {
+    const data = await Chart.find().exec()
+    res.send(data)
+  } catch (error) {
+      console.error(error)
+  }
+})
+
+app.post('/chart', async (req,res)=>{
+    const {data} = req.body
+    try {
+        await Chart.create(data)
+        res.send(data)
+    } catch (error) {
+        console.error(error)
+    }
 })
 
 app.listen(port, ()=>{

@@ -3,9 +3,14 @@ volumes:
   mongodb:
 services: 
   chart-api:
-    build: .
+    build: 
+      context: .
+      target: production
     ports:
      - 8080:8080
+    volumes:
+      - '.:/usr/app'
+      - '/usr/app/node_modules'
 
   db:
     image: mongo:latest
