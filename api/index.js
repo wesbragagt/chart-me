@@ -1,8 +1,8 @@
-import express from 'express'
-import dotenv from 'dotenv'
-import mongoose from 'mongoose'
-import cors from 'cors'
-import bodyParser from 'body-parser'
+const express = require('express')
+const dotenv = require('dotenv')
+const mongoose = require('mongoose')
+const cors = require('cors')
+const bodyParser = require('body-parser')
 
 dotenv.config()
 

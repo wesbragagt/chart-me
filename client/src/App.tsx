@@ -63,9 +63,8 @@ const App: React.FC = () => {
     const renderMusicSectionInputs = React.useCallback(() => {
         return sections.length > 0
             ? sections.map((section) => (
-                  <>
+                  <React.Fragment key={section.id}>
                       <Box
-                          key={section.id}
                           display="flex"
                           flexDirection="row"
                           marginTop={2}
@@ -91,22 +90,22 @@ const App: React.FC = () => {
                               }
                           />
                       </Box>
-                  </>
+                  </React.Fragment>
               ))
             : null
     }, [sections])
 
     const renderMusicSectionChart = React.useCallback(() => {
         return sections.map((section) => (
-            <>
-                <Box key={section.id}>
+            <React.Fragment key={section.id}>
+                <Box>
                     <Typography variant="h6">{section.label}</Typography>
                     <Typography style={{ wordSpacing: 12 }} variant="body2">
                         {section.value}
                     </Typography>
                 </Box>
                 <Divider />
-            </>
+            </React.Fragment>
         ))
     }, [sections])
 

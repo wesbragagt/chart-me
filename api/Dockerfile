@@ -1,4 +1,4 @@
-FROM mhart/alpine-node:14 as base
+FROM mhart/alpine-node:14
 
 WORKDIR /usr/app
 
@@ -10,9 +10,4 @@ COPY yarn.lock ./
 RUN yarn install --frozen-lockfile -quiet
 
 COPY . ./
-
-FROM base as development
-CMD ["yarn", "dev"]
-
-FROM base as production
 CMD ["node", "index.js"]

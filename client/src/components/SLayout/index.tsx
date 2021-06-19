@@ -18,10 +18,10 @@ const SLayout: React.FC<SLayoutProps> = ({ controls, chart, header, menu }) => (
         {menu}
         </SBox>
         <Grid spacing={1} container>
-            <Grid xs={6}>
+            <Grid item xs={6}>
                 <Box>{controls}</Box>
             </Grid>
-            <Grid xs={6}>
+            <Grid item xs={6}>
                 <Box>{chart}</Box>
             </Grid>
         </Grid>
