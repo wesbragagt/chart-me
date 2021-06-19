@@ -33,8 +33,10 @@ const App: React.FC = () => {
     const { sections, title, key, bpm, entities, isLoading } = useAppSelector(
         (state) => state.chart
     )
+    const { id: userId } = useAppSelector(
+        (state) => state.user
+    )
     const dispatch = useAppDispatch()
-    console.log(entities)
     const { isAuthenticated, user } = useAuth0()
 
     React.useEffect(() => {
@@ -43,7 +45,7 @@ const App: React.FC = () => {
             dispatch(setProfile({ id, email: user.email || '' }))
             dispatch(fetchChartsAsync())
         }
-    }, [isAuthenticated])
+    }, [isAuthenticated, user])
 
     const [inputSection, setInputSection] = React.useState('')
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,8 +124,8 @@ const App: React.FC = () => {
     }
 
     const handleSaveChart = React.useCallback(() => {
-        dispatch(saveChartAsync({ sections, title, key, bpm }))
-    }, [dispatch, sections, title, key, bpm])
+        dispatch(saveChartAsync({ userId, title, key, bpm, sections }))
+    }, [dispatch, sections, title, key, bpm, userId])
 
     if (isLoading) {
         return <span>Loading...</span>

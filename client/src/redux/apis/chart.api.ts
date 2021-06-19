@@ -6,6 +6,6 @@ export const fetchCharts = async () => {
 }
 
 export const saveChart = async (payload: any) => {
-    await client.post('/chart', payload)
+    await client.post('/chart', { data: payload })
     return payload
 }
