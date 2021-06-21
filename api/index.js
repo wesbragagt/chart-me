@@ -7,7 +7,7 @@ const bodyParser = require('body-parser')
 dotenv.config()
 
 //Set up default mongoose connection 'mongodb://username:password@host:port/database'
-const mongoDB = process.env.DB_ADDRESS || 'mongodb://db:27017/test';
+const mongoDB = process.env.MONGO_URL || 'mongodb://db:27017/test';
 mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true});
 
 //Get the default connection
