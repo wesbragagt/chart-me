@@ -21,8 +21,8 @@ const useStyles = makeStyles({
     }
 })
 export interface SDrawerProps {
-    charts: any[]
-    handleSelectChart: (id: any) => void
+    charts: any 
+    handleSelectChart: (id: string) => void
 }
 export default function SDrawer ({
     charts = [],
@@ -48,32 +48,34 @@ export default function SDrawer ({
         setState({ ...state, [anchor]: open })
     }
 
-    const list = (anchor: string) => (
-        <div
-            className={clsx(classes.list, {
-                [classes.fullList]: anchor === 'top' || anchor === 'bottom'
-            })}
-            role="presentation"
-            onClick={toggleDrawer(anchor, false)}
-            onKeyDown={toggleDrawer(anchor, false)}
-        >
-            <List>
-                {charts &&
-                    charts?.map((chart: any, i) => (
-                        <ListItem
-                            button
-                            key={`${i}-${chart?.title}`}
-                            onClick={() => handleSelectChart(chart.id)}
-                        >
-                            <ListItemIcon>
-                                <FaMusic />
-                            </ListItemIcon>
-                            <ListItemText primary={chart?.title} />
-                        </ListItem>
-                    ))}
-            </List>
-        </div>
-    )
+    const list = (anchor: string) => {
+        return (
+            <div
+                className={clsx(classes.list, {
+                    [classes.fullList]: anchor === 'top' || anchor === 'bottom'
+                })}
+                role="presentation"
+                onClick={toggleDrawer(anchor, false)}
+                onKeyDown={toggleDrawer(anchor, false)}
+            >
+                <List>
+                    {charts &&
+                        charts?.map((chart: any) => (
+                            <ListItem
+                                button
+                                key={chart._id}
+                                onClick={() => handleSelectChart(chart._id)}
+                            >
+                                <ListItemIcon>
+                                    <FaMusic />
+                                </ListItemIcon>
+                                <ListItemText primary={chart.title} />
+                            </ListItem>
+                        ))}
+                </List>
+            </div>
+        )
+    }
 
     return (
         <>

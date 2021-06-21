@@ -19,7 +19,9 @@ import {
     editBpm,
     loadSavedChart,
     fetchChartsAsync,
-    saveChartAsync
+    saveChartAsync,
+    chartAdapter,
+    updateChartAsync
 } from './redux/slices/chart.slice'
 import { FaMinusSquare, FaPlus } from 'react-icons/fa'
 import JsPDF from 'jspdf'
@@ -30,7 +32,7 @@ import { setProfile } from './redux/slices/user.slice'
 import SDrawer from './components/SDrawer'
 
 const App: React.FC = () => {
-    const { sections, title, key, bpm, entities, isLoading } = useAppSelector(
+    const { sections, title, key, bpm, charts, isLoading } = useAppSelector(
         (state) => state.chart
     )
     const { id: userId } = useAppSelector(
@@ -41,12 +43,13 @@ const App: React.FC = () => {
 
     React.useEffect(() => {
         if (isAuthenticated && user) {
-            const id = user.sub?.split('|')[1] || ''
-            dispatch(setProfile({ id, email: user.email || '' }))
-            dispatch(fetchChartsAsync())
+            const userId = user.sub?.split('|')[1] || ''
+            dispatch(setProfile({ id: userId, email: user.email || '' }))
+            dispatch(fetchChartsAsync(userId))
         }
     }, [isAuthenticated, user])
 
+    const savedCharts = chartAdapter.getSelectors().selectAll(charts)
     const [inputSection, setInputSection] = React.useState('')
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value.toUpperCase()
@@ -123,8 +126,18 @@ const App: React.FC = () => {
     }
 
     const handleSaveChart = React.useCallback(() => {
-        dispatch(saveChartAsync({ userId, title, key, bpm, sections }))
+        // update
+        const exists = savedCharts.find(e => e.title === title)
+        if (exists) {
+            dispatch(updateChartAsync({ ...exists, bpm, key, title, sections }))
+        } else {
+            dispatch(saveChartAsync({ userId, title, key, bpm, sections }))
+        }
     }, [dispatch, sections, title, key, bpm, userId])
+
+    const handleSelectChart = React.useCallback((id: string) => {
+        dispatch(loadSavedChart(id))
+    }, [dispatch])
 
     if (isLoading) {
         return <span>Loading...</span>
@@ -144,8 +157,8 @@ const App: React.FC = () => {
             }
             menu={
                 isAuthenticated && (<><SDrawer
-                charts={entities}
-                handleSelectChart={(id) => dispatch(loadSavedChart(id))}
+                charts={savedCharts}
+                handleSelectChart={handleSelectChart}
                 /><Button variant="contained" onClick={handleSaveChart}>
                 <FaPlus />
                 Save Chart

@@ -1,6 +1,15 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, createEntityAdapter, EntityState } from '@reduxjs/toolkit'
 import { v4 as uuidv4 } from 'uuid'
-import { fetchCharts, saveChart } from '../apis/chart.api'
+import { fetchCharts, saveChart, updateChart } from '../apis/chart.api'
+
+export type Chart = { _id: string, userId: string, title: string, key: string, bpm: number, sections: Section[] }
+
+export const chartAdapter = createEntityAdapter<Chart>({
+  // Assume IDs are stored in a field other than `book.id`
+  selectId: (chart) => chart._id,
+  // Keep the "all IDs" array sorted based on book titles
+  sortComparer: (a, b) => a.title.localeCompare(b.title)
+})
 interface Section {
     value: string
     label: string
@@ -12,7 +21,7 @@ interface State {
     key: string
     bpm: number
     sections: Section[]
-    entities: any[]
+    charts: EntityState<Chart>
     isLoading: boolean
 }
 const initialState: State = {
@@ -20,14 +29,14 @@ const initialState: State = {
     key: 'C',
     bpm: 70,
     sections: [],
-    entities: [],
+    charts: chartAdapter.getInitialState(),
     isLoading: false
 }
 
 export const fetchChartsAsync = createAsyncThunk(
     'charts/fetchCharts',
-    async () => {
-        return await fetchCharts()
+    async (userId: string) => {
+        return await fetchCharts(userId)
     }
 )
 
@@ -35,6 +44,12 @@ export const saveChartAsync = createAsyncThunk(
     'charts/saveChart',
     async (chart: Pick<State, 'title' & 'key' & 'bpm' & 'sections'>) => {
         return await saveChart(chart)
+    }
+)
+export const updateChartAsync = createAsyncThunk(
+    'charts/updateChart',
+    async (chart: Chart) => {
+        return await updateChart(chart)
     }
 )
 
@@ -75,35 +90,40 @@ export const chartSlice = createSlice({
             )
         },
         loadSavedChart: (state, action) => {
-            const selectedChart = state.entities.find(
-                (e) => e.id === action.payload
-            )
-            if (selectedChart) {
-                return {
-                    ...state,
-                    ...selectedChart
-                }
+            const chart = chartAdapter.getSelectors().selectById(state.charts, action.payload)
+            if (chart) {
+                state.title = chart.title
+                state.bpm = chart.bpm
+                state.key = chart.key
+                state.sections = chart.sections
             }
         }
     },
     extraReducers: (builder) => {
         builder.addCase(fetchChartsAsync.fulfilled, (state, action) => {
-            state.entities = action.payload
+            chartAdapter.setAll(state.charts, action.payload)
             state.isLoading = false
         })
         builder.addCase(fetchChartsAsync.pending, (state) => {
             state.isLoading = true
         })
         builder.addCase(saveChartAsync.fulfilled, (state, action) => {
-            const exists = state.entities.findIndex(e => e.title === action.payload.title)
-            if (exists !== -1) {
-                state.entities[exists] = action.payload
+            const alreadyExists = chartAdapter.getSelectors().selectAll(state.charts).find(chart => chart.title.toUpperCase().trim() === action.payload.title.toUpperCase().trim())
+            if (alreadyExists) {
+                chartAdapter.setOne(state.charts, action.payload)
             } else {
-                state.entities.push(action.payload)
+                chartAdapter.addOne(state.charts, action.payload)
             }
             state.isLoading = false
         })
         builder.addCase(saveChartAsync.pending, (state) => {
+            state.isLoading = true
+        })
+        builder.addCase(updateChartAsync.fulfilled, (state, action) => {
+            chartAdapter.setOne(state.charts, action.payload)
+            state.isLoading = false
+        })
+        builder.addCase(updateChartAsync.pending, (state) => {
             state.isLoading = true
         })
     }

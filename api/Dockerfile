@@ -10,4 +10,5 @@ COPY yarn.lock ./
 RUN yarn install --frozen-lockfile -quiet
 
 COPY . ./
-CMD ["node", "index.js"]
+
+CMD ["yarn", "dev"]

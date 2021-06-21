@@ -49,10 +49,41 @@ app.get('/charts', async (req,res)=>{
     const data = await Chart.find().exec()
     res.send(data)
   } catch (error) {
-      console.error(error)
+    console.error(error)
+    res.statusMessage = error.message
+    res.status(400)
   }
 })
 
+app.get('/charts/:userId', async (req,res) => {
+    if(!req.params.userId){
+        res.status(401)
+    }
+    const {userId} = req.params
+    try {
+    const charts = await Chart.find().where('userId').equals(userId).exec()
+    res.send(charts)
+    } catch (error) {
+        console.error(error)
+        res.statusMessage = error.message
+        res.status(400)
+    }
+})
+app.put('/chart', async (req,res) => {
+    if(!req.body){
+        res.statusMessage = 'Update body not provided.'
+        res.sendStatus(400)
+    }
+    const {data} = req.body
+    try {
+       await Chart.findByIdAndUpdate(data._id, data)
+       res.sendStatus(204)
+    } catch (error) {
+        console.error(error)
+        res.statusMessage = error.message
+        res.status(400) 
+    }
+})
 app.post('/chart', async (req,res)=>{
     const {data} = req.body
     try {
@@ -60,6 +91,8 @@ app.post('/chart', async (req,res)=>{
         res.send(data)
     } catch (error) {
         console.error(error)
+        res.statusMessage = error.message
+        res.status(400)
     }
 })
 
