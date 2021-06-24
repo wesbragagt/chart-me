@@ -2,7 +2,9 @@ FROM mhart/alpine-node:14
 
 WORKDIR /usr/app
 
-EXPOSE 8080
+ENV PORT=8080
+EXPOSE $PORT
+
 
 COPY package.json ./
 COPY yarn.lock ./
@@ -11,4 +13,4 @@ RUN yarn install --frozen-lockfile -quiet
 
 COPY . ./
 
-CMD ["yarn", "dev"]
+CMD ["node", "index.js"]
