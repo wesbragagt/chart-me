@@ -140,7 +140,7 @@ const App: React.FC = () => {
         dispatch(loadSavedChart(id))
     }, [dispatch])
 
-    const handleDeleteChart = React.useCallback((id: string) => dispatch(deleteChartAsync({ _id: id })), [dispatch])
+    const handleDeleteChart = React.useCallback((_id: string) => dispatch(deleteChartAsync({ _id })), [dispatch])
 
     if (isLoading) {
         return <span>Loading...</span>
