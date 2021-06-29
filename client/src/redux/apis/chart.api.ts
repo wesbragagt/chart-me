@@ -15,3 +15,8 @@ export const updateChart = async (payload: Chart) => {
     await client.put('/chart', { data: payload })
     return payload
 }
+
+export const deleteChart = async (payload: Pick<Chart, '_id'>) => {
+    await client.put('/chart', { data: payload })
+    return payload
+}

@@ -96,6 +96,18 @@ app.post('/chart', async (req,res)=>{
     }
 })
 
+app.delete('/chart', async (req,res) => {
+    const {data} = req.body
+    try {
+        await Chart.findByIdAndRemove(data._id)
+        res.send(data)
+    } catch (error) {
+        console.error(error)
+        res.statusMessage = error.message
+        res.status(400)
+    }
+})
+
 app.listen(port, ()=>{
     console.log(`Listening on ${port}`)
 })

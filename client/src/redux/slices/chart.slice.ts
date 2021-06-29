@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, createEntityAdapter, EntityState } from '@reduxjs/toolkit'
 import { v4 as uuidv4 } from 'uuid'
-import { fetchCharts, saveChart, updateChart } from '../apis/chart.api'
+import { deleteChart, fetchCharts, saveChart, updateChart } from '../apis/chart.api'
 
 export type Chart = { _id: string, userId: string, title: string, key: string, bpm: number, sections: Section[] }
 
@@ -35,22 +35,21 @@ const initialState: State = {
 
 export const fetchChartsAsync = createAsyncThunk(
     'charts/fetchCharts',
-    async (userId: string) => {
-        return await fetchCharts(userId)
-    }
+    fetchCharts
 )
 
 export const saveChartAsync = createAsyncThunk(
     'charts/saveChart',
-    async (chart: Pick<State, 'title' & 'key' & 'bpm' & 'sections'>) => {
-        return await saveChart(chart)
-    }
+    saveChart
 )
 export const updateChartAsync = createAsyncThunk(
     'charts/updateChart',
-    async (chart: Chart) => {
-        return await updateChart(chart)
-    }
+    updateChart
+)
+
+export const deleteChartAsync = createAsyncThunk(
+    'chart/deleteChart',
+    deleteChart
 )
 
 export const chartSlice = createSlice({
@@ -125,6 +124,13 @@ export const chartSlice = createSlice({
         })
         builder.addCase(updateChartAsync.pending, (state) => {
             state.isLoading = true
+        })
+        builder.addCase(deleteChartAsync.pending, (state) => {
+            state.isLoading = true
+        })
+        builder.addCase(deleteChartAsync.fulfilled, (state, action) => {
+            state.isLoading = false
+            chartAdapter.removeOne(state.charts, action.payload._id)
         })
     }
 })

@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button'
 import List from '@material-ui/core/List'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
-import { FaMusic } from 'react-icons/fa'
+import { FaMusic, FaTrash } from 'react-icons/fa'
 import ListItem from '@material-ui/core/ListItem'
 
 const useStyles = makeStyles({
@@ -23,10 +23,12 @@ const useStyles = makeStyles({
 export interface SDrawerProps {
     charts: any 
     handleSelectChart: (id: string) => void
+    handleDeleteChart: (id: string) => void
 }
 export default function SDrawer ({
     charts = [],
-    handleSelectChart
+    handleSelectChart,
+    handleDeleteChart
 }: SDrawerProps) {
     const classes = useStyles()
     const [state, setState] = React.useState<any>({
@@ -70,6 +72,9 @@ export default function SDrawer ({
                                     <FaMusic />
                                 </ListItemIcon>
                                 <ListItemText primary={chart.title} />
+                                <Button variant='contained' color='secondary' onClick={() => handleDeleteChart(chart._id)}>
+                                    <FaTrash />
+                                </Button>
                             </ListItem>
                         ))}
                 </List>

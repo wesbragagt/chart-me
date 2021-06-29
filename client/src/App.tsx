@@ -21,7 +21,8 @@ import {
     fetchChartsAsync,
     saveChartAsync,
     chartAdapter,
-    updateChartAsync
+    updateChartAsync,
+    deleteChartAsync
 } from './redux/slices/chart.slice'
 import { FaMinusSquare, FaPlus } from 'react-icons/fa'
 import JsPDF from 'jspdf'
@@ -139,6 +140,8 @@ const App: React.FC = () => {
         dispatch(loadSavedChart(id))
     }, [dispatch])
 
+    const handleDeleteChart = React.useCallback((id: string) => dispatch(deleteChartAsync({ _id: id })), [dispatch])
+
     if (isLoading) {
         return <span>Loading...</span>
     }
@@ -159,6 +162,7 @@ const App: React.FC = () => {
                 isAuthenticated && (<><SDrawer
                 charts={savedCharts}
                 handleSelectChart={handleSelectChart}
+                handleDeleteChart={handleDeleteChart}
                 /><Button variant="contained" onClick={handleSaveChart}>
                 <FaPlus />
                 Save Chart
