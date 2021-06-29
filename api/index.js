@@ -99,7 +99,7 @@ app.post('/chart', async (req,res)=>{
 app.delete('/chart', async (req,res) => {
     const {data} = req.body
     try {
-        await Chart.findByIdAndRemove(data._id)
+        await Chart.remove(data)
         res.send(data)
     } catch (error) {
         console.error(error)
