@@ -31,6 +31,7 @@ import keys from './keys'
 import { useAuth0 } from '@auth0/auth0-react'
 import { setProfile } from './redux/slices/user.slice'
 import SDrawer from './components/SDrawer'
+import { useWindowSize } from './lib/useWindowSize'
 
 const App: React.FC = () => {
     const { sections, title, key, bpm, charts, isLoading } = useAppSelector(
@@ -41,6 +42,8 @@ const App: React.FC = () => {
     )
     const dispatch = useAppDispatch()
     const { isAuthenticated, user } = useAuth0()
+
+    const { height } = useWindowSize()
 
     React.useEffect(() => {
         if (isAuthenticated && user) {
@@ -169,7 +172,7 @@ const App: React.FC = () => {
             </Button></>)
             }
             controls={
-                <SPaper>
+                <SPaper height={height && height < 642 ? '85vh' : '90vh'}>
                     <Button onClick={handleDownloadPDF}>Download Chart</Button>
                     <Typography variant="h4">Controls</Typography>
                     <SBox m={1}>
@@ -219,7 +222,7 @@ const App: React.FC = () => {
                 </SPaper>
             }
             chart={
-                <SPaper id="pdf">
+                <SPaper id="pdf" height={height && height < 642 ? '85vh' : '90vh'}>
                     <Typography align="left" variant="h5">
                         {title}
                     </Typography>
