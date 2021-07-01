@@ -34,7 +34,7 @@ import SDrawer from './components/SDrawer'
 import { useWindowSize } from './lib/useWindowSize'
 
 const App: React.FC = () => {
-    const { sections, title, key, bpm, charts, isLoading } = useAppSelector(
+    const { sections, title, key, bpm, charts } = useAppSelector(
         (state) => state.chart
     )
     const { id: userId } = useAppSelector(
@@ -144,10 +144,6 @@ const App: React.FC = () => {
     }, [dispatch])
 
     const handleDeleteChart = React.useCallback((_id: string) => dispatch(deleteChartAsync({ _id })), [dispatch])
-
-    if (isLoading) {
-        return <span>Loading...</span>
-    }
 
     return (
         <SLayout
