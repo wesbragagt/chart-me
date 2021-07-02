@@ -21,7 +21,7 @@ const useStyles = makeStyles({
     }
 })
 export interface SDrawerProps {
-    charts: any 
+    charts: any
     handleSelectChart: (id: string) => void
     handleDeleteChart: (id: string) => void
 }
@@ -72,7 +72,11 @@ export default function SDrawer ({
                                     <FaMusic />
                                 </ListItemIcon>
                                 <ListItemText primary={chart.title} />
-                                <Button variant='contained' color='secondary' onClick={() => handleDeleteChart(chart._id)}>
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    onClick={() => handleDeleteChart(chart._id)}
+                                >
                                     <FaTrash />
                                 </Button>
                             </ListItem>

@@ -31,19 +31,14 @@ import keys from './keys'
 import { useAuth0 } from '@auth0/auth0-react'
 import { setProfile } from './redux/slices/user.slice'
 import SDrawer from './components/SDrawer'
-import { useWindowSize } from './lib/useWindowSize'
 
 const App: React.FC = () => {
     const { sections, title, key, bpm, charts } = useAppSelector(
         (state) => state.chart
     )
-    const { id: userId } = useAppSelector(
-        (state) => state.user
-    )
+    const { id: userId } = useAppSelector((state) => state.user)
     const dispatch = useAppDispatch()
     const { isAuthenticated, user } = useAuth0()
-
-    const { height } = useWindowSize()
 
     React.useEffect(() => {
         if (isAuthenticated && user) {
@@ -71,11 +66,7 @@ const App: React.FC = () => {
         return sections.length > 0
             ? sections.map((section) => (
                   <React.Fragment key={section.id}>
-                      <Box
-                          display="flex"
-                          flexDirection="row"
-                          marginTop={2}
-                      >
+                      <Box display="flex" flexDirection="row" marginTop={2}>
                           <STextField
                               multiline
                               variant="outlined"
@@ -131,7 +122,7 @@ const App: React.FC = () => {
 
     const handleSaveChart = React.useCallback(() => {
         // update
-        const exists = savedCharts.find(e => e.title === title)
+        const exists = savedCharts.find((e) => e.title === title)
         if (exists) {
             dispatch(updateChartAsync({ ...exists, bpm, key, title, sections }))
         } else {
@@ -139,11 +130,17 @@ const App: React.FC = () => {
         }
     }, [dispatch, sections, title, key, bpm, userId])
 
-    const handleSelectChart = React.useCallback((id: string) => {
-        dispatch(loadSavedChart(id))
-    }, [dispatch])
+    const handleSelectChart = React.useCallback(
+        (id: string) => {
+            dispatch(loadSavedChart(id))
+        },
+        [dispatch]
+    )
 
-    const handleDeleteChart = React.useCallback((_id: string) => dispatch(deleteChartAsync({ _id })), [dispatch])
+    const handleDeleteChart = React.useCallback(
+        (_id: string) => dispatch(deleteChartAsync({ _id })),
+        [dispatch]
+    )
 
     return (
         <SLayout
@@ -158,17 +155,22 @@ const App: React.FC = () => {
                 </SBox>
             }
             menu={
-                isAuthenticated && (<><SDrawer
-                charts={savedCharts}
-                handleSelectChart={handleSelectChart}
-                handleDeleteChart={handleDeleteChart}
-                /><Button variant="contained" onClick={handleSaveChart}>
-                <FaPlus />
-                Save Chart
-            </Button></>)
+                isAuthenticated && (
+                    <>
+                        <SDrawer
+                            charts={savedCharts}
+                            handleSelectChart={handleSelectChart}
+                            handleDeleteChart={handleDeleteChart}
+                        />
+                        <Button variant="contained" onClick={handleSaveChart}>
+                            <FaPlus />
+                            Save Chart
+                        </Button>
+                    </>
+                )
             }
             controls={
-                <SPaper height={height && height < 642 ? '85vh' : '90vh'}>
+                <SPaper>
                     <Button onClick={handleDownloadPDF}>Download Chart</Button>
                     <Typography variant="h4">Controls</Typography>
                     <SBox m={1}>
@@ -218,7 +220,7 @@ const App: React.FC = () => {
                 </SPaper>
             }
             chart={
-                <SPaper id="pdf" height={height && height < 642 ? '85vh' : '90vh'}>
+                <SPaper id="pdf">
                     <Typography align="left" variant="h5">
                         {title}
                     </Typography>

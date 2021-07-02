@@ -15,7 +15,7 @@ ReactDOM.render(
     <Authentication>
         <Provider store={store}>
             <StylesProvider injectFirst>
-                    <App />
+                <App />
             </StylesProvider>
         </Provider>
     </Authentication>,

@@ -1,14 +1,31 @@
-import { createSlice, createAsyncThunk, createEntityAdapter, EntityState } from '@reduxjs/toolkit'
+import {
+    createSlice,
+    createAsyncThunk,
+    createEntityAdapter,
+    EntityState
+} from '@reduxjs/toolkit'
 import { v4 as uuidv4 } from 'uuid'
-import { deleteChart, fetchCharts, saveChart, updateChart } from '../apis/chart.api'
+import {
+    deleteChart,
+    fetchCharts,
+    saveChart,
+    updateChart
+} from '../apis/chart.api'
 
-export type Chart = { _id: string, userId: string, title: string, key: string, bpm: number, sections: Section[] }
+export type Chart = {
+    _id: string
+    userId: string
+    title: string
+    key: string
+    bpm: number
+    sections: Section[]
+}
 
 export const chartAdapter = createEntityAdapter<Chart>({
-  // Assume IDs are stored in a field other than `book.id`
-  selectId: (chart) => chart._id,
-  // Keep the "all IDs" array sorted based on book titles
-  sortComparer: (a, b) => a.title.localeCompare(b.title)
+    // Assume IDs are stored in a field other than `book.id`
+    selectId: (chart) => chart._id,
+    // Keep the "all IDs" array sorted based on book titles
+    sortComparer: (a, b) => a.title.localeCompare(b.title)
 })
 interface Section {
     value: string
@@ -38,10 +55,7 @@ export const fetchChartsAsync = createAsyncThunk(
     fetchCharts
 )
 
-export const saveChartAsync = createAsyncThunk(
-    'charts/saveChart',
-    saveChart
-)
+export const saveChartAsync = createAsyncThunk('charts/saveChart', saveChart)
 export const updateChartAsync = createAsyncThunk(
     'charts/updateChart',
     updateChart
@@ -89,7 +103,9 @@ export const chartSlice = createSlice({
             )
         },
         loadSavedChart: (state, action) => {
-            const chart = chartAdapter.getSelectors().selectById(state.charts, action.payload)
+            const chart = chartAdapter
+                .getSelectors()
+                .selectById(state.charts, action.payload)
             if (chart) {
                 state.title = chart.title
                 state.bpm = chart.bpm
@@ -107,7 +123,14 @@ export const chartSlice = createSlice({
             state.isLoading = true
         })
         builder.addCase(saveChartAsync.fulfilled, (state, action) => {
-            const alreadyExists = chartAdapter.getSelectors().selectAll(state.charts).find(chart => chart.title.toUpperCase().trim() === action.payload.title.toUpperCase().trim())
+            const alreadyExists = chartAdapter
+                .getSelectors()
+                .selectAll(state.charts)
+                .find(
+                    (chart) =>
+                        chart.title.toUpperCase().trim() ===
+                        action.payload.title.toUpperCase().trim()
+                )
             if (alreadyExists) {
                 chartAdapter.setOne(state.charts, action.payload)
             } else {
