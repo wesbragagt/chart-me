@@ -1,12 +1,12 @@
 import { Box, Divider, Typography, Button } from '@material-ui/core'
 import React from 'react'
 import {
-    SPaper,
-    STextField,
-    SLayout,
-    SBox,
     SignOut,
-    SignIn
+    SignIn,
+    SBox,
+    SLayout,
+    SPaper,
+    STextField
 } from './components'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { useAppDispatch, useAppSelector } from './redux/hooks'
@@ -28,10 +28,9 @@ import { FaMinusSquare, FaPlus } from 'react-icons/fa'
 import JsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
 import keys from './keys'
-import { useAuth0 } from '@auth0/auth0-react'
 import { setProfile } from './redux/slices/user.slice'
+import { useAuth0 } from '@auth0/auth0-react'
 import SDrawer from './components/SDrawer'
-
 const App: React.FC = () => {
     const { sections, title, key, bpm, charts } = useAppSelector(
         (state) => state.chart
@@ -39,7 +38,6 @@ const App: React.FC = () => {
     const { id: userId } = useAppSelector((state) => state.user)
     const dispatch = useAppDispatch()
     const { isAuthenticated, user } = useAuth0()
-
     React.useEffect(() => {
         if (isAuthenticated && user) {
             const userId = user.sub?.split('|')[1] || ''
@@ -141,7 +139,6 @@ const App: React.FC = () => {
         (_id: string) => dispatch(deleteChartAsync({ _id })),
         [dispatch]
     )
-
     return (
         <SLayout
             header={
@@ -188,7 +185,7 @@ const App: React.FC = () => {
                             options={keys}
                             placeholder="C"
                             value={key}
-                            onChange={(e, value) => dispatch(editKey(value))}
+                            onChange={(_, value) => dispatch(editKey(value))}
                             getOptionLabel={(option) => option}
                             style={{ width: 300 }}
                             renderInput={(params) => (
